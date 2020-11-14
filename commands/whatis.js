@@ -28,6 +28,20 @@ module.exports = {
 			message.channel.send(`No results found for "${args.join(' ')}"`);
 			return;
 		}
-		message.channel.send(list[0].definition);
+		// array destructuring...gimme the first elem only
+		const [answer] = list;
+
+		// construction of the embed based on JSON returned by API
+		const embed = new Discord.MessageEmbed()
+			.setColor('#EFFF00')
+			.setTitle(answer.word)
+			.setURL(answer.permalink)
+			.addFields(
+				{name: 'Description', value: trim(answer.definition, 1024) },
+				{name: 'Example', value: trim(answer.example, 1024) },
+				{name: 'Rating', value: `{answer.thumbs_up} thumps up. {answer.thumbs_down} thumbs down` }
+			);
+
+		message.channel.send(embed);
 	}
 }
