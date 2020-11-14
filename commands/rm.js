@@ -5,9 +5,11 @@ module.exports = {
 	usage: '<int>',
 	cooldown: 5,
 	aliases: ['remove','prune','del','clear','cls'],
+	permissions: [ 763635059273629697 ],
 	execute(message, args){
-		if(!message.author.username === 'sugarhiccup'){
-			message.reply('GGWP, nibba. But that is only for Sir Sugar, not for a ugly sleazybag like you ;)');
+		if(!message.author.id === 763635059273629697){
+			message.reply('GGWP, nibba. But that is only for Sir Sugar');
+			return;
 		}
 
 		const count = parseInt(args[0]);

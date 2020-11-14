@@ -25,7 +25,7 @@ client.once('ready', () => {
 });
 
 client.on('message', (message) => {
-	console.log(`Incoming:\n${message.author.username} says ${message.content}`);
+	console.log(`[${message.channel.name}] ${message.author.username}: ${message.content}`);
 
 	// Don't interfere when you are not required and don't be dumb enough to reply to your own msgs.
 	if(!message.content.startsWith(prefix) || message.author.bot) return;
@@ -38,7 +38,10 @@ client.on('message', (message) => {
 	const cmd = client.commands.get(cmdname)
 		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(cmdname));
 
-	if(!cmd) return;
+	// If a NON EXISTENT COMMAND 
+	// Send a graceful help message and exit
+	//
+	if(!cmd) return message.channel.send(`Wait, that's not a command ${message.author.username}\n\nBut you can send your suggestions to #bot-suggestions ;)`);
 
 	// provide EXPECTED COMMAND USAGE for oblivious users. 
 	// Good UX
@@ -77,6 +80,15 @@ client.on('message', (message) => {
 
 		timestamps.set(message.author.id, now);
 		setTimeout(() => timestamps.delete(message.author.id), cdtime);
+	}
+
+	// EXCLUSIVE COMMANDS
+	// Uses the message.author.id to determine if author has privileges to use this command
+	if(cmd.permissions){
+		if(cmd.permissions[0] === message.author.id){
+				message.channel.send(`fatal: you can't use this command.\nDo you have enough privileges?`);
+				return;
+		}
 	}
 
 	try{
