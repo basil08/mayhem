@@ -1,7 +1,24 @@
+const fs = require('fs');
 const Discord = require('discord.js');
 const {prefix, token} = require('./config.json');
 
 const client = new Discord.Client();
+
+client.commands = new Discord.Collection();
+
+const cooldowns = new Discord.Collection();
+
+const files = fs.readdirSync('./commands').filter(name => name.endsWith('.js'));
+
+for(const f of files){
+	const command = require(`./commands/${f}`);
+
+	// According to Discord API, Discord.Collection is a JS Map Object with more convenience methods
+	//
+	// Set the record with key as the command name and value as the command itself
+	client.commands.set(command.name, command);
+}
+
 
 client.once('ready', () => {
 	console.log('Ready!');
@@ -13,39 +30,60 @@ client.on('message', (message) => {
 	// Don't interfere when you are not required and don't be dumb enough to reply to your own msgs.
 	if(!message.content.startsWith(prefix) || message.author.bot) return;
 
-	const tokens = message.content.slice(prefix.length).trim().split(/ +/);
-	const cmd = tokens.shift().toLowerCase();
+	const args = message.content.slice(prefix.length).trim().split(/ +/);
+	const cmdname = args.shift().toLowerCase();
 
-	if(cmd === 'hi'){
-		message.channel.send(`Yo! I am the Harvester Bot. Nice to meet you! ${message.author}`);
+	// COMMAND ALIASING
+	// see <command>.aliases
+	const cmd = client.commands.get(cmdname)
+		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(cmdname));
+
+	if(!cmd) return;
+
+	// provide EXPECTED COMMAND USAGE for oblivious users. 
+	// Good UX
+	// see <command>.usage
+	if(cmd.args && !args.length){
+		let reply = 'You must provide arguments for this command';
+
+		if(cmd.usage){
+			reply += `\nThe correct usage of this command is:\n${prefix}${cmd.name} ${cmd.usage}`;
+		}
+		message.channel.send(reply);
+		
+		return;
 	}
-	else if(cmd === 'whereami'){
-		message.channel.send(`You are on the majestic ${message.guild.name} server! ${message.author}`);
-	}
-	else if(cmd === 'whoami'){
-		message.channel.send(`Your username is: ${message.author.username}\nYour ID: ${message.author.id}`);
-	}
-	else if(cmd === 'rm'){
-		if(!message.author.username === 'sugarhiccup'){
-			message.reply('GGWP, nibba. But that is only for Sir Sugar, not for a ugly sleazybag like you ;)');
+
+	// If the command has a cooldown period, 
+	// Wait for that much time
+	// else inform user gracefully.
+	if(cmd.cooldown){
+		if(!cooldowns.has(cmd.name)){
+			cooldowns.set(cmd.name, new Discord.Collection());
 		}
 
-		const count = parseInt(tokens[0]);
+		const now = Date.now();
+		const timestamps = cooldowns.get(cmd.name);
+		const cdtime = (cmd.cooldown) * 1000;
 
-		if(isNaN(count)){ 
-			message.reply(`${tokens[0]}: That doesn't look like a number to me`);
-		} 
-		else{
-			// +1 to also delete the command to delete also
-			message.channel.bulkDelete(count+1, true).catch(err => {
-				console.log(err);
-				message.channel.send('Sorry, there was a problem encountered while pruning this channel');
-			});
+		if(timestamps.has(message.author.id)){
+			const expirationDate = timestamps.get(message.author.id) + cdtime;
+			
+			if(now < expirationDate){
+				const timeLeft = (expirationDate - now) / 1000;
+				return message.reply(`You have to wait ${timeLeft.toFixed(1)} more second(s) to use the ${cmd.name} command`);
+			}
 		}
+
+		timestamps.set(message.author.id, now);
+		setTimeout(() => timestamps.delete(message.author.id), cdtime);
 	}
-	else if(cmd === 'help'){
-		const help = `I am the Harvester Bot v0.4rev2\n\nI understand the following commands:\n* help: Display this help message\n* hi: A nice introduction is the gentleman's way.\n* whereami: Tells you where you currently are. Immensely useful after a booze party ;)\n* whoami: Well, if it was a particularly good booze party.\n* rm [int]: Prune that many messages from current channel. (Reserved)\n\nNote: all commands are prefixed by .\n\nSend your love to @sugarhiccup ;)`;
-		message.channel.send(help);
+
+	try{
+		cmd.execute(message, args);
+	}catch(err){
+		console.error(err);
+		message.reply('Oops. There was an error while executing that command.');
 	}
 });
 
