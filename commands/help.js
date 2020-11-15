@@ -1,4 +1,5 @@
 const {prefix, version,bot_name, bot_author} = require('../config.json');
+const Discord = require('discord.js');
 
 module.exports = {
 	name: 'help',
@@ -34,15 +35,18 @@ module.exports = {
 				return message.reply('Not a valid command -_-');
 			}
 
-			data.push(`${command.name}`);
+			const embed = new Discord.MessageEmbed()
+			.setTitle(`Help for ${command.name}`)
+			.setColor('#02fede')
+			.addFields(
+				{name: 'Aliases', value: (command.aliases) ? `${command.aliases.join(', ')}`: 'There are no aliases for this command!'},
+				{name: 'Description', value: (command.description) ? `${command.description}`: 'Currently no description available!'},
+				{name: 'Usage', value: (command.usage) ? `${command.usage}`:'Currently no usage available!'},
+				{name: 'Cooldown', value: (command.cooldown) ? `${command.cooldown} second(s)`: 'This command has no cooldown!'}
+			)
+			.setTimestamp();
 
-			if (command.aliases) data.push(`Aliases: ${command.aliases.join(', ')}`);
-			if (command.description) data.push(`Description: ${command.description}`);
-			if (command.usage) data.push(`Usage: ${command.usage}`);
-
-			command.cooldown ? data.push(`Cooldown: ${command.cooldown}`) : data.push(`This command has no cooldown!`);
-
-			message.channel.send(data, {split: true});
+			message.channel.send(embed);
 		}
 	}
 }

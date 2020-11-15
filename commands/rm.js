@@ -2,16 +2,11 @@ module.exports = {
 	name: 'rm',
 	description: 'Prunes that many messages from current channel. (Reserved)',
 	args: true,
-	usage: '<int>',
+	usage: '.rm <number>',
 	cooldown: 5,
 	aliases: ['remove','prune','del','clear','cls'],
-	permissions: [ 763635059273629697 ],
+	permissions: [ '763635059273629697' ],
 	execute(message, args){
-		if(!message.author.id === 763635059273629697){
-			message.reply('GGWP, nibba. But that is only for Sir Sugar');
-			return;
-		}
-
 		const count = parseInt(args[0]);
 
 		if(isNaN(count)){ 

@@ -1,19 +1,23 @@
 const {version, bot_name, bot_author} = require('../config.json');
+const Discord = require('discord.js');
 
 module.exports = {
 	name: 'ls',
 	description: 'list all the command names',
-	usage: 'ls',
+	usage: '.ls',
 	aliases: ['commands'],
 	execute(message, args){
 		const data = [];
 		const {commands} = message.client;
 
 		if(!args.length){
-			data.push(`This is the ${bot_name} Bot version ${version}`);
-			data.push(commands.map(command => command.name).join('\n'));
-			data.push(`\n\nIf you are nodding at this command name, then ${bot_author} says you are cool!`);
-			return message.channel.send(data, {split: true});
+			const embed = new Discord.MessageEmbed()
+			.setTitle(`This is the ${bot_name} Bot version ${version}`)
+			.setColor('#fa5246')
+			.addFields({name: 'Commands available', value: commands.map(command => '\t\t'+command.name).join('\n')})
+			.setTimestamp();
+
+			return message.channel.send(embed);
 		}
 		else{
 			return message.channel.send(`ls doesn't support arguments now`);

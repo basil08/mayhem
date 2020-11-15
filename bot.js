@@ -85,7 +85,7 @@ client.on('message', (message) => {
 	// EXCLUSIVE COMMANDS
 	// Uses the message.author.id to determine if author has privileges to use this command
 	if(cmd.permissions){
-		if(cmd.permissions[0] === message.author.id){
+		if(!(cmd.permissions[0] === message.author.id)){
 				message.channel.send(`fatal: you can't use this command.\nDo you have enough privileges?`);
 				return;
 		}

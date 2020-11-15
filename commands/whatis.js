@@ -6,6 +6,7 @@ module.exports = {
 	name: 'whatis',
 	description: 'Your own dictionary utility on Discord.\n\nNo googling or changing tabs :)',
 	cooldown: 10,
+	usage: '.whatis <search-term>',
 	aliases: ['def','define'],
 	async execute(message, args){
 		if(!args.length){
