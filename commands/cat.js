@@ -1,6 +1,5 @@
-const fetch = require('node-fetch');
 const Discord = require('discord.js');
-const {CAT_API_KEY} = require('../config.json');
+const fs = require('fs');
 
 /* 
  * API source: googled and found on rapidapi.com under free
@@ -10,23 +9,20 @@ module.exports = {
 	name: 'cat',
 	description: 'An enlightening piece of cat fact that will change your life.',
 	usage: '.cat',
-	cooldown: 10,
+	cooldown: 5,
 	async execute(message, args){
-		const data = await fetch("https://brianiswu-cat-facts-v1.p.rapidapi.com/facts", {
-	"method": "GET",
-	"headers": {
-		"x-rapidapi-key": CAT_API_KEY, 
-		"x-rapidapi-host": "brianiswu-cat-facts-v1.p.rapidapi.com"
-		}})
-		.then(response => response.text())
-		.then(test_response => JSON.parse(test_response))
-			.catch(error => {
-				console.log(error);
-				message.channel.send('Cricket sounds.\nAn error occured while executing that command.');
-			});
-		// DEBUG:
-		//console.log(data.all);
+		// read from saved static data
+		// good for quick response
+		// this cat api has no endpoints. either all data or none
+		// obviously, all for each request is an overkill
 		//
+		// but this approach has flaws as what if data on API is changed?
+		// one solution: make a request each time bot reboots
+		// but ok, I am lazy...
+		//
+		let data_file_name = '\\cat_data.json';
+		let data = JSON.parse(fs.readFileSync(__dirname + data_file_name));
+
 		let index = Math.floor(Math.random() * data.all.length);
 		const factText = data.all[index].text;
 		const upVotes = parseInt(data.all[index].upvotes);
