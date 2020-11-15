@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const Discord = require('discord.js');
+const {CAT_API_KEY} = require('../config.json');
 
 /* 
  * API source: googled and found on rapidapi.com under free
@@ -14,7 +15,7 @@ module.exports = {
 		const data = await fetch("https://brianiswu-cat-facts-v1.p.rapidapi.com/facts", {
 	"method": "GET",
 	"headers": {
-		"x-rapidapi-key": "b2c34774e4msheec32c9f0cdc75cp1c9166jsn26066a19d90a",
+		"x-rapidapi-key": CAT_API_KEY, 
 		"x-rapidapi-host": "brianiswu-cat-facts-v1.p.rapidapi.com"
 		}})
 		.then(response => response.text())
