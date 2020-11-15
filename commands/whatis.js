@@ -1,5 +1,6 @@
 const querystring = require('querystring');
 const fetch = require('node-fetch');
+const Discord = require('discord.js');
 
 module.exports = {
 	name: 'whatis',
@@ -12,9 +13,8 @@ module.exports = {
 			return;
 		}
 		const query = querystring.stringify({term: args.join(' ')});
-
-		// DEBUG
-		console.log(query);
+		
+		const trim = (str, max) => ((str.length > max) ? `${str.slice(0, max-3)}...`: str);
 
 		const {list} = await fetch(`https://api.urbandictionary.com/v0/define?${query}`)
 			.then(response => response.text())
@@ -39,7 +39,7 @@ module.exports = {
 			.addFields(
 				{name: 'Description', value: trim(answer.definition, 1024) },
 				{name: 'Example', value: trim(answer.example, 1024) },
-				{name: 'Rating', value: `{answer.thumbs_up} thumps up. {answer.thumbs_down} thumbs down` }
+				{name: 'Rating', value: `${answer.thumbs_up} thumps up. ${answer.thumbs_down} thumbs down` }
 			);
 
 		message.channel.send(embed);

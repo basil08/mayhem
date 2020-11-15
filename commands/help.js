@@ -1,4 +1,4 @@
-const {prefix, version, bot_author} = require('../config.json');
+const {prefix, version,bot_name, bot_author} = require('../config.json');
 
 module.exports = {
 	name: 'help',
@@ -10,7 +10,7 @@ module.exports = {
 
 		if(!args.length){
 			// show all commands
-			data.push(`This is the Harvester Bot version ${version}`);
+			data.push(`This is the ${bot_name} Bot version ${version}`);
 			data.push(commands.map(command => command.name).join(', '));
 			data.push(`Use ${prefix}help [command name] to get details about [command name]`);
 			data.push(`All commands are prefixed by the ${prefix} (period)`);
