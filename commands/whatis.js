@@ -37,9 +37,9 @@ module.exports = {
 			.setTitle(answer.word)
 			.setURL(answer.permalink)
 			.addFields(
-				{name: 'Description', value: trim(answer.definition, 1024) },
-				{name: 'Example', value: trim(answer.example, 1024) },
-				{name: 'Rating', value: `${answer.thumbs_up} thumps up. ${answer.thumbs_down} thumbs down` }
+				{name: 'Description', value: (answer.definition) ? trim(answer.definition, 1024): 'No description available!' },
+				{name: 'Example', value: (answer.example) ? trim(answer.example, 1024) : 'No example available' },
+				{name: 'Rating', value: (answer.thumbs_up && answer.thumbs_down) ?`${answer.thumbs_up} thumps up. ${answer.thumbs_down} thumbs down`: 'No rating available' }
 			);
 
 		message.channel.send(embed);
