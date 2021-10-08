@@ -5,20 +5,16 @@ const {prefix, token} = require('./config.json');
 const client = new Discord.Client();
 
 client.commands = new Discord.Collection();
-
 const cooldowns = new Discord.Collection();
 
 const files = fs.readdirSync('./commands').filter(name => name.endsWith('.js'));
 
 for(const f of files){
 	const command = require(`./commands/${f}`);
-
 	// According to Discord API, Discord.Collection is a JS Map Object with more convenience methods
-	//
 	// Set the record with key as the command name and value as the command itself
 	client.commands.set(command.name, command);
 }
-
 
 client.once('ready', () => {
 	console.log('Ready!');
@@ -57,7 +53,7 @@ client.on('message', (message) => {
 		return;
 	}
 
-	// If the command has a cooldown period, 
+	// If the command has a COOLDOWN PERIOD, 
 	// Wait for that much time
 	// else inform user gracefully.
 	if(cmd.cooldown){
