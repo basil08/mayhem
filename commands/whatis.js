@@ -29,10 +29,10 @@ module.exports = {
 			message.channel.send(`No results found for "${args.join(' ')}"`);
 			return;
 		}
-		// array destructuring...gimme the first elem only
+		// The first elem only
+		// See :Array Destructuring
 		const [answer] = list;
 
-		// construction of the embed based on JSON returned by API
 		const embed = new Discord.MessageEmbed()
 			.setColor('#EFFF00')
 			.setTitle(answer.word)

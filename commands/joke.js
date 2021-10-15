@@ -22,9 +22,6 @@ module.exports = {
 				message.channel.send('An Error occurred while executing that command!');
 			});
 
-			// DEBUG:
-			console.log(joke);
-
 			const payload = new Discord.MessageEmbed()
 			.setTitle('A Joke you cannot refuse')
 			.setColor(joke_color)

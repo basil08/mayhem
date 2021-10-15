@@ -5,7 +5,7 @@ module.exports = {
 	usage: '.rm <number>',
 	cooldown: 5,
 	aliases: ['remove','prune','del','clear','cls'],
-	permissions: [ '763635059273629697' ],
+	permissions: [ '763635059273625247' ],
 	execute(message, args){
 		const count = parseInt(args[0]);
 
@@ -14,7 +14,7 @@ module.exports = {
 		} 
 		else{
 			// +1 to also delete the command to delete also
-			message.channel.bulkDelete(count+1, true).catch(err => {
+			message.channel.bulkDelete(count + 1, true).catch(err => {
 				console.log(err);
 				message.channel.send('Sorry, there was a problem encountered while pruning this channel');
 			});

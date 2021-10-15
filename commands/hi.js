@@ -6,7 +6,6 @@ module.exports = {
 	description: 'A nice introduction is the gentleman\'s way.',
 	usage: '',
 	execute(message, args){
-		// 'yo! i am the mayhem bot. nice to meet you, author
 		const embed = new Discord.MessageEmbed()
 			.setColor('#00ebc7')
 			.setTitle(`Hello! ${message.author.username}`)

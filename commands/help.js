@@ -19,11 +19,13 @@ module.exports = {
 
 			// split: true splits the message into separate messages if char count > 2000
 			return message.author.send(data, {split: true})
-				.then(() => {	// DM as help message can get messy
+				.then(() => {	
+					// DM as help message can get messy
 					if(message.channel.type === 'dm') return;
 					message.reply('I\'ve sent you a DM');
 				})
-				.catch(error => {  // the case when user has DM disabled must be gracefully handled
+				.catch(error => {  
+					// the case when user has DM disabled must be gracefully handled
 					console.error(`Could not send help DM to ${message.author.tag}.\n`,error);
 					message.reply('I can\'t DM you. Do you have DMs disabled?');
 				});

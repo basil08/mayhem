@@ -1,6 +1,6 @@
 module.exports = {
 	name: 'reload',
-	description: 'Reloads a command. (Not for all)',
+	description: 'Reloads a command. (Developer command)',
 	execute(message, args){
 		if(!args.length) return message.channel.send(`Specify a command, ${message.author.username}`);
 		const cmdname = args[0].toLowerCase();
